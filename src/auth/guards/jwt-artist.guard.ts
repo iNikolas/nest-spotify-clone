@@ -1,17 +1,25 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PayloadType } from '../types/payload.type';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Injectable()
-export class JwtArtistGuard extends AuthGuard('jwt') {
+export class JwtArtistGuard extends JwtAuthGuard {
   handleRequest<TUser extends PayloadType>(
     err: Error | null,
     user: TUser,
+    info: any,
+    context: ExecutionContext,
   ): TUser {
+    user = super.handleRequest(err, user, info, context);
+
     if (user.artistId) {
       return user;
     }
 
-    throw err ?? new UnauthorizedException();
+    throw err ?? new UnauthorizedException('User is not an artist');
   }
 }

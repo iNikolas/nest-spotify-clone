@@ -14,6 +14,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Enable2FAType } from './types/auth.type';
 import { UpdateResult } from 'typeorm';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
+import { Is2FAEndpoint } from './decorators/is2fa-endpoint.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -52,6 +53,7 @@ export class AuthController {
   }
 
   @Post('validate-2fa')
+  @Is2FAEndpoint()
   @UseGuards(JwtAuthGuard)
   validate2FA(
     @Request()
