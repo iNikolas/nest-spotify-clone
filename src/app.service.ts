@@ -9,7 +9,4 @@ export class AppService {
   ) {
     console.log(`Config port: ${config.port}`);
   }
-  getHello(): string {
-    return `Hello I am learning Nest.js Fundamentals ${this.devConfigService.getDBHOST()}`;
-  }
 }

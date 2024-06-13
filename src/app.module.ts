@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SongsModule } from './songs/songs.module';
@@ -31,15 +31,19 @@ const proConfig = {
     ConfigModule.forRoot({ isGlobal: true }),
     SongsModule,
     LoggerModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'default',
-      password: '1111',
-      database: 'n-test',
-      entities: [Artist, Playlist, Song, User],
-      synchronize: true, // New table and fields will materialize automatically without migrations
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [Artist, Playlist, Song, User],
+        synchronize: true, // New table and fields will materialize automatically without migrations
+      }),
+      inject: [ConfigService],
     }),
     PlaylistsModule,
     AuthModule,
