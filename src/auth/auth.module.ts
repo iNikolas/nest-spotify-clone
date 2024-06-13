@@ -6,9 +6,11 @@ import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JWTStrategy } from './jwt.strategy';
+import { ArtistsModule } from 'src/artists/artists.module';
 
 @Module({
   imports: [
+    ArtistsModule,
     UserModule,
     PassportModule,
     JwtModule.registerAsync({

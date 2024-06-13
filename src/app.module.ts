@@ -16,6 +16,8 @@ import { Playlist } from './entities/playlist.entity';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ArtistsModule } from './artists/artists.module';
+import { SeedModule } from './seed/seed.module';
 
 const devConfig = {
   port: 3000,
@@ -48,6 +50,8 @@ const proConfig = {
     PlaylistsModule,
     AuthModule,
     UserModule,
+    ArtistsModule,
+    SeedModule,
   ], // external modules needed for the current module
   controllers: [AppController], // Serve the function of handling incoming requests and sending responeses back to the client
   providers: [

@@ -3,10 +3,13 @@ import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { LoginDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ArtistsService } from 'src/artists/artists.service';
+import { PayloadType } from './types/payload.type';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private artistsService: ArtistsService,
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
@@ -16,8 +19,11 @@ export class AuthService {
     const passwordMatched = bcrypt.compare(loginDTO.password, user.password);
 
     if (passwordMatched) {
-      const payload = { ...user };
-      delete payload.password;
+      const userCopy = { ...user };
+      delete userCopy.password;
+      const artist = await this.artistsService.findArtist(user.id);
+      const payload: PayloadType = { ...userCopy, artistId: artist?.id };
+
       return {
         accessToken: this.jwtService.sign(payload),
       };
