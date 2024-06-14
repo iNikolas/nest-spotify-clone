@@ -8,6 +8,7 @@ import { ArtistsService } from 'src/artists/artists.service';
 import { PayloadType } from './types/payload.type';
 import { Enable2FAType } from './types/auth.type';
 import { UpdateResult } from 'typeorm';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -85,5 +86,9 @@ export class AuthService {
     } catch (err) {
       throw new UnauthorizedException('Error verifying token');
     }
+  }
+
+  async validateUserByApiKey(apiKey: string): Promise<User> {
+    return this.userService.findByApiKey(apiKey);
   }
 }

@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcryptjs';
+import { v4 as uuid4 } from 'uuid';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
@@ -15,7 +16,11 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const password = await bcrypt.hash(userDTO.password, salt);
 
-    const user = await this.userRepository.save({ ...userDTO, password });
+    const user = await this.userRepository.save({
+      ...userDTO,
+      password,
+      apiKey: uuid4(),
+    });
     delete user.password;
 
     return user;
@@ -57,5 +62,9 @@ export class UserService {
         twoFASecret: null,
       },
     );
+  }
+
+  async findByApiKey(apiKey: string): Promise<User> {
+    return this.userRepository.findOneBy({ apiKey });
   }
 }
